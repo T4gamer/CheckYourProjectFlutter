@@ -46,6 +46,8 @@ class StudentProvider extends ChangeNotifier {
 
   List<Project> get projectList => _projectList;
 
+  Future<Project?> get currentProject async => await _getCurrentProject();
+
   List<Requirement> get requirementList => _requirementList;
 
   void setErrorMessage(String message) {
@@ -71,6 +73,10 @@ class StudentProvider extends ChangeNotifier {
     _loadSuggestions();
     _loadProjects();
     notifyListeners();
+  }
+
+  Future<Project?> _getCurrentProject() async {
+    return await _userService.project;
   }
 
   Future<List<ImportantDate>> _loadImportantDates() async {
@@ -165,6 +171,7 @@ class StudentProvider extends ChangeNotifier {
           status: "w",
           title: _suggestionTitle,
           image: _suggestionUrl);
+      print(suggestion);
       await postSuggestion(suggestion);
     }
   }

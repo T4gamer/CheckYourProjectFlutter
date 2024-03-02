@@ -61,13 +61,13 @@ Future<User> getMyAccount() async {
   return User.fromJson(jsonDecode(body).first);
 }
 
-Future<Student> getStudent(int id) async {
-  Response response = await services.get("$STUDENT$id/", null);
+Future<Student> getStudent(int? id) async {
+  Response response = await services.get(STUDENT, {"user":"$id"});
   final body = responseDecoder(response);
   if (response.statusCode != 200) {
     throw Exception('${response.statusCode}:${response.body}');
   }
-  return Student.fromJson(jsonDecode(body));
+  return Student.fromJson(jsonDecode(body)["datum"].first);
 }
 
 Future<StudentDetailsList> getStudentDetailsList() async {

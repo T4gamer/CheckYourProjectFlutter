@@ -25,8 +25,19 @@ class StudentSuggestionList extends StatelessWidget {
                         style: const ButtonStyle(
                             backgroundColor:
                                 MaterialStatePropertyAll(Color(0xff00577B))),
-                        onPressed: () {
-                          provider.setNewSuggestion(true);
+                        onPressed: () async {
+                          final project = await provider.currentProject;
+                          if (project != null) {
+                            provider.setNewSuggestion(true);
+                          } else {
+                            final scaffold = ScaffoldMessenger.of(context);
+                            scaffold.showSnackBar(
+                              const SnackBar(
+                                content: Text("لم يتم تعين مشروع لك لا يمكنك اضافة مقترح"),
+                                duration: Duration(seconds: 4),
+                              ),
+                            );
+                          }
                         },
                         child: const Text(
                           "إضافة مقترح للمشروع",
@@ -59,134 +70,135 @@ class StudentSuggestionList extends StatelessWidget {
                         )
                 ],
               )
-            : AddSuggestionPage(provider: provider),
+            : const AddSuggestionPage(),
       );
     });
   }
 }
 
 class AddSuggestionPage extends StatelessWidget {
-  final provider;
-
-  const AddSuggestionPage({super.key, required this.provider});
+  const AddSuggestionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              "إضافة مقترح جديد",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      child: Consumer<StudentProvider>(builder: (context, provider, _) {
+        return Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                "إضافة مقترح جديد",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              children: [
-                SizedBox(
-                  width: 300,
-                  child: TextFormField(
-                    onChanged: provider.setNewSuggestionTitle,
-                    decoration: InputDecoration(
-                        hintText: "عنوان المقترح",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(32))),
-                  ),
-                ),
-                TextField(
-                    onChanged: provider.setNewSuggestionContent,
-                    maxLines: null,
-                    decoration: const InputDecoration(
-                      hintText: "تفاصيل المقترح يكمنك الكتابة هنا كما تشاء ...",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(16))),
-                    )),
-                provider.suggestionUrl != ""
-                    ? Center(
-                        child: SizedBox(
-                            width: 250,
-                            height: 250,
-                            child: Image.network(provider.suggestionUrl)),
-                      )
-                    : Container(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "إختيار صورة",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                children: [
+                  SizedBox(
+                    width: 300,
+                    child: TextFormField(
+                      onChanged: provider.setNewSuggestionTitle,
+                      decoration: InputDecoration(
+                          hintText: "عنوان المقترح",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32))),
                     ),
-                    IconButton(
-                        onPressed: () async {
-                          final picker = ImagePicker();
-                          final pickedFile = await picker.pickImage(
-                              source: ImageSource.gallery);
+                  ),
+                  TextField(
+                      onChanged: provider.setNewSuggestionContent,
+                      maxLines: null,
+                      decoration: const InputDecoration(
+                        hintText:
+                            "تفاصيل المقترح يكمنك الكتابة هنا كما تشاء ...",
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(16))),
+                      )),
+                  provider.suggestionUrl != ""
+                      ? Center(
+                          child: SizedBox(
+                              width: 250,
+                              height: 250,
+                              child: Image.network(provider.suggestionUrl)),
+                        )
+                      : Container(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "إختيار صورة",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400, fontSize: 18),
+                      ),
+                      IconButton(
+                          onPressed: () async {
+                            final picker = ImagePicker();
+                            final pickedFile = await picker.pickImage(
+                                source: ImageSource.gallery);
 
-                          if (pickedFile != null) {
-                            final file = File(pickedFile.path);
-                            final bytes = await file.readAsBytes();
-                            final base64Image = base64Encode(bytes);
-                            provider.setImageBase64(base64Image);
-                            await provider.uploadImage();
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.upload_file,
-                          size: 40,
-                          color: Color(0xff196D8F),
-                        )),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          provider.createSuggestion();
-                          provider.setNewSuggestion(false);
-                        },
-                        child: const Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.arrow_back_ios),
-                            ),
-                            Text(
-                              "رجوع",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ],
-                        )),
-                    ElevatedButton(
-                        onPressed: () {
-                          provider.createSuggestion();
-                          provider.setNewSuggestion(false);
-                        },
-                        child: const Row(
-                          children: [
-                            Text(
-                              "حفظ المقترح",
-                              style: TextStyle(fontSize: 24),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.save),
-                            )
-                          ],
-                        )),
-                  ],
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
+                            if (pickedFile != null) {
+                              final file = File(pickedFile.path);
+                              final bytes = await file.readAsBytes();
+                              final base64Image = base64Encode(bytes);
+                              provider.setImageBase64(base64Image);
+                              await provider.uploadImage();
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.upload_file,
+                            size: 40,
+                            color: Color(0xff196D8F),
+                          )),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {
+                            provider.setNewSuggestion(false);
+                          },
+                          child: const Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(Icons.arrow_back_ios),
+                              ),
+                              Text(
+                                "رجوع",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ],
+                          )),
+                      ElevatedButton(
+                          onPressed: () {
+                            provider.createSuggestion();
+                            provider.setNewSuggestion(false);
+                          },
+                          child: const Row(
+                            children: [
+                              Text(
+                                "حفظ المقترح",
+                                style: TextStyle(fontSize: 24),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(Icons.save),
+                              )
+                            ],
+                          )),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
+        );
+      }),
     );
   }
 }
@@ -201,23 +213,23 @@ class TeacherSuggestionList extends StatelessWidget {
         child: !provider.newSuggestion
             ? Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ElevatedButton(
-                        style: const ButtonStyle(
-                            backgroundColor:
-                                MaterialStatePropertyAll(Color(0xff00577B))),
-                        onPressed: () {
-                          provider.setNewSuggestion(true);
-                        },
-                        child: const Text(
-                          "إضافة مقترح للمشروع",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 18),
-                        )),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(16.0),
+                  //   child: ElevatedButton(
+                  //       style: const ButtonStyle(
+                  //           backgroundColor:
+                  //               MaterialStatePropertyAll(Color(0xff00577B))),
+                  //       onPressed: () {
+                  //         provider.setNewSuggestion(true);
+                  //       },
+                  //       child: const Text(
+                  //         "إضافة مقترح للمشروع",
+                  //         style: TextStyle(
+                  //             fontWeight: FontWeight.bold,
+                  //             color: Colors.white,
+                  //             fontSize: 18),
+                  //       )),
+                  // ),
                   Expanded(
                     child: FutureBuilder(
                         future: provider.suggestionList,
@@ -250,7 +262,9 @@ class TeacherSuggestionList extends StatelessWidget {
                   )
                 ],
               )
-            : AddSuggestionPage(provider: provider),
+            : Container()
+        // AddSuggestionPage()
+        ,
       );
     });
   }

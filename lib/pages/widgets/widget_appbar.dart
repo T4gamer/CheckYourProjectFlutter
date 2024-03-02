@@ -68,25 +68,29 @@ class StudentAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const BaseAppBar(
-      content: [
-        Row(
-          children: [
-            Text("تاريخ التسليم: ",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                )),
-            Text(
-              "2024-1-1",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900),
-            ),
+    return Consumer<UserProvider>(
+      builder: (context,provider,_) {
+        return BaseAppBar(
+          content: [
+            Row(
+              children: [
+                const Text("تاريخ التسليم: ",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    )),
+                Text(
+                  provider.project?.deliveryDate != null ? "${provider.project?.deliveryDate}":"غير محدد",
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900),
+                ),
+              ],
+            )
           ],
-        )
-      ],
+        );
+      }
     );
   }
 }
@@ -106,7 +110,7 @@ class StudentProgressionAppBar extends StatelessWidget {
                   fontSize: 16,
                 )),
             Text(
-              "${provider.project?.deliveryDate}",
+            provider.project?.deliveryDate != null ? "${provider.project?.deliveryDate}":"غير محدد",
               style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,

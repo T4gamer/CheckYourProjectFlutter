@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_manager/pages/widgets/page_archive.dart';
 import 'package:project_manager/pages/widgets/widget_admin_base_page.dart';
+import 'package:project_manager/pages/widgets/widget_confirm_delete.dart';
 import 'package:project_manager/pages/widgets/widget_project.dart';
 import 'package:project_manager/pages/widgets/widget_searchbar.dart';
 import 'package:provider/provider.dart';
@@ -87,8 +88,17 @@ class AdminProjectDeletePage extends StatelessWidget {
                                       return InkWell(
                                         onTap: () {
                                           // provider.setCurrentProject(item);
-                                          provider.deleteProject(
-                                              item.id, index, false);
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return DeleteConfirmationDialog(
+                                                onConfirm: () {
+                                                  provider.deleteProject(
+                                                      item.id, index, false);
+                                                },
+                                              );
+                                            },
+                                          );
                                         },
                                         child: Stack(
                                           alignment: Alignment.centerLeft,

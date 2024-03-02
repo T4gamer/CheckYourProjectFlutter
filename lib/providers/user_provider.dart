@@ -134,17 +134,19 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> _loadUser() async {
-    _user = await userServices.user;
+    _user ??= await userServices.user;
     notifyListeners();
   }
 
   Future<void> _loadStudent() async {
-    _studentAccount = await userServices.student;
-    notifyListeners();
+    if(_studentAccount == null){
+      _studentAccount = await userServices.student;
+      notifyListeners();
+    }
   }
 
   Future<void> _loadProject() async {
-    _studentProject = await userServices.project;
+    _studentProject ??= await userServices.project;
     notifyListeners();
   }
 

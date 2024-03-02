@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_manager/pages/widgets/widget_admin_base_page.dart';
+import 'package:project_manager/pages/widgets/widget_confirm_delete.dart';
 import 'package:project_manager/pages/widgets/widget_searchbar.dart';
 import 'package:project_manager/providers/admin_teacher_provider.dart';
 import 'package:project_manager/providers/edit_teacher_provider.dart';
@@ -630,7 +631,16 @@ class AdminTeacherDeletePage extends StatelessWidget {
                                   const EdgeInsets.symmetric(horizontal: 32.0),
                               child: IconButton(
                                   onPressed: () {
-                                    provider.deleteTeacher(item.id, index, false);
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return DeleteConfirmationDialog(
+                                          onConfirm: () {
+                                            provider.deleteTeacher(item.id, index, false);
+                                          },
+                                        );
+                                      },
+                                    );
                                   },
                                   icon: const Icon(Icons.delete)),
                             )

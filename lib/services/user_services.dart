@@ -36,9 +36,10 @@ class UserService {
   }
 
   Future<Student?> _getStudent() async {
+    await _getUser();
     if (_user != null) {
       if (_user!.groups.first == 2) {
-        _studentAccount = await getStudent(_user!.id);
+        _studentAccount = await getStudent(_user?.id);
         return _studentAccount;
       }
     }
