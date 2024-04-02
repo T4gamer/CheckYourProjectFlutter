@@ -30,16 +30,19 @@ class Student {
     required this.project,
     required this.id,
     required this.user,
+    this.serialNumber,
   });
 
   int phoneNumber;
   int? project;
+  int? serialNumber;
   int id;
   int user;
 
   factory Student.fromJson(Map<dynamic, dynamic> json) => Student(
         phoneNumber: json["phoneNumber"],
         project: json["project"],
+        serialNumber: json["serialNumber"],
         id: json["id"],
         user: json["user"],
       );
@@ -47,6 +50,7 @@ class Student {
   Map<dynamic, dynamic> toJson() => {
         "phoneNumber": phoneNumber,
         "project": project,
+        "serialNumber": serialNumber,
         "id": id,
         "user": user,
       };

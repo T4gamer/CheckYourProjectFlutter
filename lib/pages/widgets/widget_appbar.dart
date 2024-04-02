@@ -3,6 +3,8 @@ import 'package:capped_progress_indicator/capped_progress_indicator.dart';
 import 'package:project_manager/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/student_provider.dart';
+
 class BaseAppBar extends StatelessWidget {
   final List<Widget> content;
 
@@ -68,30 +70,30 @@ class StudentAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserProvider>(
-      builder: (context,provider,_) {
-        return BaseAppBar(
-          content: [
-            Row(
-              children: [
-                const Text("تاريخ التسليم: ",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    )),
-                Text(
-                  provider.project?.deliveryDate != null ? "${provider.project?.deliveryDate}":"غير محدد",
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900),
-                ),
-              ],
-            )
-          ],
-        );
-      }
-    );
+    return Consumer<UserProvider>(builder: (context, provider, _) {
+      return BaseAppBar(
+        content: [
+          Row(
+            children: [
+              const Text("تاريخ التسليم: ",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  )),
+              Text(
+                provider.project?.deliveryDate != null
+                    ? "${provider.project?.deliveryDate}"
+                    : "غير محدد",
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900),
+              ),
+            ],
+          )
+        ],
+      );
+    });
   }
 }
 
@@ -100,7 +102,7 @@ class StudentProgressionAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserProvider>(builder: (context, provider, child) {
+    return Consumer<StudentProvider>(builder: (context, provider, child) {
       return BaseAppBar(content: [
         Row(
           children: [
@@ -110,7 +112,9 @@ class StudentProgressionAppBar extends StatelessWidget {
                   fontSize: 16,
                 )),
             Text(
-            provider.project?.deliveryDate != null ? "${provider.project?.deliveryDate}":"غير محدد",
+              provider.currentProject?.deliveryDate != null
+                  ? "${provider.currentProject?.deliveryDate}"
+                  : "غير محدد",
               style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -120,39 +124,47 @@ class StudentProgressionAppBar extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Text(
-                provider.project != null
-                    ? "${(provider.project!.progression).toInt()}%"
-                    : "0%",
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                  height: 170,
-                  width: 170,
-                  child: CircularCappedProgressIndicator(
-                    value: provider.project != null
-                        ? provider.project!.progression / 100
-                        : 0.0,
-                    backgroundColor: const Color(0xff196D8F),
-                    color: Colors.white,
-                    strokeWidth: 16,
-                  )),
-              // Positioned(
-              //   left: 0,
-              //   bottom: 0,
-              //   child: IconButton(
-              //     icon: const Icon(Icons.edit, size: 32, color: Colors.white),
-              //     onPressed: () {},
-              //   ),
-              // ),
-            ],
-          ),
+          child: FutureBuilder(
+              future: provider.getCurrentProject(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.waiting) {
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Text(
+                        provider.currentProject != null
+                            ? "${(provider.currentProject!.progression).toInt()}%"
+                            : "0%",
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                          height: 170,
+                          width: 170,
+                          child: CircularCappedProgressIndicator(
+                            value: provider.currentProject != null
+                                ? provider.currentProject!.progression / 100
+                                : 0.0,
+                            backgroundColor: const Color(0xff196D8F),
+                            color: Colors.white,
+                            strokeWidth: 16,
+                          )),
+                      // Positioned(
+                      //   left: 0,
+                      //   bottom: 0,
+                      //   child: IconButton(
+                      //     icon: const Icon(Icons.edit, size: 32, color: Colors.white),
+                      //     onPressed: () {},
+                      //   ),
+                      // ),
+                    ],
+                  );
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              }),
         ),
         const Text(
           "نسبة الانجاز",

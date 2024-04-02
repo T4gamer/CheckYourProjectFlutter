@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_manager/pages/widgets/page_suggestion_list.dart';
+import 'package:project_manager/pages/widgets/widget_confirm_delete.dart';
 import 'package:project_manager/pages/widgets/widget_dialog.dart';
 import 'package:project_manager/pages/widgets/widget_requirements.dart';
 import 'package:project_manager/providers/student_provider.dart';
@@ -136,7 +137,16 @@ class StudentDetails extends StatelessWidget {
                                         elevation:
                                             MaterialStateProperty.all(2)),
                                     onPressed: () {
-                                      provider.deleteSuggestion();
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return DeleteConfirmationDialog(
+                                            onConfirm: () {
+                                              provider.deleteSuggestion();
+                                            },
+                                          );
+                                        },
+                                      );
                                     },
                                     icon: const Icon(
                                       Icons.delete,
@@ -169,6 +179,7 @@ class StudentDetails extends StatelessWidget {
                               ),
                             ),
                             Flexible(
+                              flex: 3,
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: [
@@ -219,7 +230,8 @@ class StudentDetails extends StatelessWidget {
                                   )
                                 ],
                               ),
-                            )
+                            ),
+                            const Spacer()
                           ],
                         ),
                       )

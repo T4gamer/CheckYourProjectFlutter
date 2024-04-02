@@ -158,3 +158,54 @@ class _RequirementDialogState extends State<RequirementDialog> {
     );
   }
 }
+
+class LoginErrorDialog extends StatelessWidget {
+  final String errorMessage;
+
+  const LoginErrorDialog({super.key, required this.errorMessage});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('خطأ في تسجيل الدخول'),
+      content: Text(errorMessage),
+      actions: [
+        TextButton(
+          child: const Text('حسناً'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class SaveConfirmationDialog extends StatelessWidget {
+  final VoidCallback onPress;
+
+  const SaveConfirmationDialog({super.key, required this.onPress});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('حفظ الاقتراح'),
+      content: const Text('هل أنت متأكد أنك تريد الحفظ؟'),
+      actions: [
+        TextButton(
+          child: const Text('نعم'),
+          onPressed: () {
+            onPress();
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          child: const Text('لا'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  }
+}

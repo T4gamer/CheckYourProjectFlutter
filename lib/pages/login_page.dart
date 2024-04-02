@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_manager/pages/widgets/widget_dialog.dart';
 import 'package:project_manager/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -79,23 +80,23 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                         ),
-                        provider.loginError
-                            ? const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 32, vertical: 4),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "إسم المستخدم أو كلمة المرور غير صحيحة",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.redAccent),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Container(),
+                        // provider.loginError
+                        //     ? const Padding(
+                        //         padding: EdgeInsets.symmetric(
+                        //             horizontal: 32, vertical: 4),
+                        //         child: Row(
+                        //           children: [
+                        //             Text(
+                        //               "إسم المستخدم أو كلمة المرور غير صحيحة",
+                        //               style: TextStyle(
+                        //                   fontSize: 16,
+                        //                   fontWeight: FontWeight.bold,
+                        //                   color: Colors.redAccent),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       )
+                        //     : Container(),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 32, horizontal: 32),
@@ -158,6 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                                         onPressed: () async {
                                           provider.setLoginLoading(true);
                                           setState(() {});
+
                                           try {
                                             await provider.loginUser();
                                             // Future.delayed(
@@ -168,9 +170,29 @@ class _LoginPageState extends State<LoginPage> {
                                               setState(() {});
                                             }
                                           } catch (error) {
+                                            showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return LoginErrorDialog(
+                                                    errorMessage:
+                                                        error.toString(),
+                                                  );
+                                                });
                                             setState(() {});
                                           }
                                           provider.setLoginLoading(false);
+                                          if(!provider.loggedIn){
+                                            showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return const LoginErrorDialog(
+                                                    errorMessage:
+                                                    "أسم المستخدم او كلمة المرور خاطئة",
+                                                  );
+                                                });
+                                          }
                                           setState(() {});
                                         },
                                         style: const ButtonStyle(

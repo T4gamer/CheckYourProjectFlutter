@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:project_manager/pages/widgets/widget_dialog.dart';
 import 'package:project_manager/pages/widgets/widget_suggestion.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_manager/providers/admin_project_provider.dart';
@@ -178,10 +179,16 @@ class AddSuggestionPage extends StatelessWidget {
                             ],
                           )),
                       ElevatedButton(
-                          onPressed: () {
-                            provider.loadingSaveSuggestion = true;
-                            provider.createProject();
-                            provider.setNewSuggestion(false);
+                          onPressed: () async {
+                            await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return SaveConfirmationDialog(onPress: () {
+                                    provider.loadingSaveSuggestion = true;
+                                    provider.createProject();
+                                    provider.setNewSuggestion(false);
+                                  });
+                                });
                           },
                           child: const Row(
                             children: [

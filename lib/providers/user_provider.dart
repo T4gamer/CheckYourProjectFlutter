@@ -59,7 +59,10 @@ class UserProvider extends ChangeNotifier {
         if (s == Logging.notUser) {
           _loginError = true;
         } else if (s == Logging.student) {
-          await userServices.student;
+          final student = await userServices.student;
+          if (student == null) {
+            _loginError = true;
+          }
         } else {
           _loginError = false;
         }

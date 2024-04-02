@@ -154,6 +154,7 @@ class StudentProvider extends ChangeNotifier {
       final requirement =
           await postRequirement(_selectedSuggestion!.id, content);
       _requirementList.add(requirement);
+      getCurrentProject();
       notifyListeners();
     }
   }
@@ -204,6 +205,7 @@ class StudentProvider extends ChangeNotifier {
       }
     } catch (e) {
       onSaveSuggestionError = e.toString();
+      notifyListeners();
     }
     loadingSaveSuggestion = false;
     onItemTapped(selectedIndex);
@@ -223,8 +225,8 @@ class StudentProvider extends ChangeNotifier {
         id: _currentProject!.id,
         teacher: 0,
         title: suggestion.title,
-        image: null,
-        progression: null,
+        image: "Well we got nothing that we can do",
+        progression: 0,
         deliveryDate: "",
         mainSuggestion: suggestion.id);
     _selectedSuggestion = suggestion;
@@ -240,11 +242,13 @@ class StudentProvider extends ChangeNotifier {
   void deleteRequirement(int index) {
     delRequirement(_requirementList[index].id);
     _requirementList.removeAt(index);
+    getCurrentProject();
     notifyListeners();
   }
 
   Future<void> editRequirement(int id, Requirement requirement) async {
     await patchRequirement(id, requirement.name, requirement.status, null);
+    getCurrentProject();
     _loadSuggestions();
   }
 }

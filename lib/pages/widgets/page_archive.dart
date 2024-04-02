@@ -4,7 +4,6 @@ import 'package:project_manager/providers/admin_project_provider.dart';
 import 'package:project_manager/providers/teacher_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/chat_provider.dart';
 import '../../providers/student_provider.dart';
 
 class Archive extends StatelessWidget {
