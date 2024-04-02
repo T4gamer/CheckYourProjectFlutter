@@ -16,13 +16,13 @@ class StudentPage extends StatelessWidget {
 
   WidgetSwitchCase switchCase(int index) {
     switch (index) {
-      case 2:
-        return StudentDetailsLoadedCase();
       case 1:
-        return StudentSuggestionListLoadedCase();
+        return StudentDetailsLoadedCase();
+      // case 1:
+      //   return StudentSuggestionListLoadedCase();
       case 0:
         return StudentImportantDatesLoadedCase();
-      case 3:
+      case 2:
         return StudentArchiveLoadedCase();
       default:
         return LoadingWidgetCase();
@@ -35,12 +35,13 @@ class StudentPage extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Consumer<StudentProvider>(builder: (context, provider, child) {
         return Scaffold(
-          bottomNavigationBar: const BottomNavigator(),
+          bottomNavigationBar: const StudentBottomNavigator(),
           resizeToAvoidBottomInset: false,
           floatingActionButton: FloatingActionButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/chat');
-              }, child: const Icon(Icons.chat)),
+              },
+              child: const Icon(Icons.chat)),
           body: Column(
             children: [
               provider.selectedIndex == 0
@@ -83,9 +84,9 @@ class StudentPage extends StatelessWidget {
                     if (value is StudentDetailsLoadedCase) {
                       return const StudentDetails();
                     }
-                    if (value is StudentSuggestionListLoadedCase) {
-                      return const StudentSuggestionList();
-                    }
+                    // if (value is StudentSuggestionListLoadedCase) {
+                    //   return const StudentSuggestionList();
+                    // }
                     if (value is StudentImportantDatesLoadedCase) {
                       return const ImportantDatesListWidget();
                     }

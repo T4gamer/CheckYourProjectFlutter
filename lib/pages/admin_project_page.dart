@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:project_manager/models/file_direct_link.dart';
 import 'package:project_manager/pages/widgets/page_archive.dart';
+import 'package:project_manager/pages/widgets/page_suggestion_list.dart';
 import 'package:project_manager/pages/widgets/widget_admin_base_page.dart';
 import 'package:project_manager/pages/widgets/widget_confirm_delete.dart';
 import 'package:project_manager/pages/widgets/widget_project.dart';
 import 'package:project_manager/pages/widgets/widget_searchbar.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
+import '../models/widget_FormTextField.dart';
 import '../providers/admin_project_provider.dart';
+import '../providers/edit_project_provider.dart';
 import 'admin_students_page.dart';
 
 class AdminProjectListPage extends StatelessWidget {
@@ -112,8 +117,21 @@ class AdminProjectDeletePage extends StatelessWidget {
                                                   const EdgeInsets.all(16.0),
                                               child: IconButton(
                                                 onPressed: () {
-                                                  provider.deleteProject(
-                                                      item.id, index, false);
+                                                  showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return DeleteConfirmationDialog(
+                                                        onConfirm: () {
+                                                          provider
+                                                              .deleteProject(
+                                                                  item.id,
+                                                                  index,
+                                                                  false);
+                                                        },
+                                                      );
+                                                    },
+                                                  );
                                                 },
                                                 icon: const Icon(Icons.delete),
                                               ),
@@ -133,8 +151,20 @@ class AdminProjectDeletePage extends StatelessWidget {
                                           return InkWell(
                                             onTap: () {
                                               // provider.setCurrentProject(item);
-                                              provider.deleteProject(
-                                                  item.id, index, true);
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return DeleteConfirmationDialog(
+                                                    onConfirm: () {
+                                                      provider.deleteProject(
+                                                          item.id,
+                                                          index,
+                                                          false);
+                                                    },
+                                                  );
+                                                },
+                                              );
                                             },
                                             child: Stack(
                                               alignment: Alignment.centerLeft,
@@ -148,8 +178,21 @@ class AdminProjectDeletePage extends StatelessWidget {
                                                       16.0),
                                                   child: IconButton(
                                                     onPressed: () {
-                                                      provider.deleteProject(
-                                                          item.id, index, true);
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return DeleteConfirmationDialog(
+                                                            onConfirm: () {
+                                                              provider
+                                                                  .deleteProject(
+                                                                      item.id,
+                                                                      index,
+                                                                      false);
+                                                            },
+                                                          );
+                                                        },
+                                                      );
                                                     },
                                                     icon: const Icon(
                                                         Icons.delete),
@@ -886,6 +929,281 @@ class AdminProjectSetTeacherPage extends StatelessWidget {
           );
         }),
       ),
+    );
+  }
+}
+
+class AdminProjectEditPage extends StatelessWidget {
+  const AdminProjectEditPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AdminBasePage(
+      resizeInset: false,
+      child: Consumer<AdminEditProjectProvider>(
+          builder: (context, provider, child) {
+        return provider.project == null
+            ? Expanded(
+                child: FutureBuilder(
+                    future: provider.loadProjects(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data == true) {
+                          return Column(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: Text("قائمة المشاريع",
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              AdminSearchbar(
+                                  onChanged: (String val) {
+                                    provider.filterProjectList();
+                                  },
+                                  editingController:
+                                      provider.searchbarController),
+                              Expanded(
+                                  child: provider.filterList.isNotEmpty
+                                      ? ListView(
+                                          children: List.generate(
+                                              provider.filterList.length,
+                                              (index) {
+                                            final item =
+                                                provider.filterList[index];
+                                            return InkWell(
+                                              onTap: () {
+                                                provider.setProject(item);
+                                              },
+                                              child: Stack(
+                                                alignment: Alignment.centerLeft,
+                                                children: [
+                                                  ProjectWidget(
+                                                    title: item.title,
+                                                    image: item.image,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            16.0),
+                                                    child: IconButton(
+                                                      onPressed: () {
+                                                        provider
+                                                            .setProject(item);
+                                                      },
+                                                      icon: const Icon(
+                                                          Icons.edit),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                        )
+                                      : provider.projectList.isNotEmpty
+                                          ? ListView(
+                                              children: List.generate(
+                                                  provider.projectList.length,
+                                                  (index) {
+                                                final item =
+                                                    provider.projectList[index];
+                                                return InkWell(
+                                                  onTap: () {
+                                                    // provider.setCurrentProject(item);
+                                                    provider.setProject(item);
+                                                  },
+                                                  child: Stack(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    children: [
+                                                      ProjectWidget(
+                                                        title: item.title,
+                                                        image: item.image,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(16.0),
+                                                        child: IconButton(
+                                                          onPressed: () {
+                                                            provider.setProject(
+                                                                item);
+                                                          },
+                                                          icon: const Icon(
+                                                              Icons.edit),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }),
+                                            )
+                                          : const Center(
+                                              child: Text(
+                                                  "لا توجد مشاريع لعرضها"))),
+                            ],
+                          );
+                        } else {
+                          return const Center(
+                              child: Text("لا توجد مشاريع لعرضها"));
+                        }
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                    }),
+              )
+            : SingleChildScrollView(
+                child: Form(
+                  key: provider.formKey,
+                  onChanged: provider.onFromStateChanged,
+                  child: Column(
+                    children: [
+                      provider.error.isNotEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(provider.error,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.red)),
+                            )
+                          : Container(),
+                      FormTextField(
+                        hint: provider.title.text,
+                        icon: Icons.view_headline,
+                        isPassword: false,
+                        onChanged: (value) {
+                          provider.title.text = value;
+                        },
+                      ),
+                      Stack(
+                        alignment: Alignment.centerLeft,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: IconButton(
+                                onPressed: () async {
+                                  final date = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime.utc(2000),
+                                      lastDate: DateTime.utc(2050));
+                                  if (date != null) {
+                                    provider.setDeliveryDate(date);
+                                  }
+                                },
+                                icon: const Icon(Icons.date_range)),
+                          ),
+                          FormTextField(
+                              hint:
+                                  provider.deliveryDate.text == "null-null-null"
+                                      ? "تاريخ التسليم"
+                                      : provider.deliveryDate.text,
+                              icon: Icons.date_range,
+                              readonly: true,
+                              isPassword: false)
+                        ],
+                      ),
+                      FutureBuilder(
+                          future: provider.getPdfLink(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              if (snapshot.data != null) {
+                                return SfPdfViewer.network(snapshot.data!);
+                              }
+                            }
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
+                            return Image.asset("assets/incomplete.png");
+                          }),
+                      ElevatedButton(
+                          onPressed: () {},
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("تحميل ملف PDF"),
+                              Icon(Icons.upload_file)
+                            ],
+                          )),
+                      !provider.isLoading
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                SizedBox(
+                                  height: 50,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      provider.setProject(null);
+                                    },
+                                    style: const ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStatePropertyAll(
+                                                Color(0xff00577B))),
+                                    child: const Text(
+                                      "رجوع لقائمة المشاريع",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 50,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      provider.updateProject();
+                                      provider.setProject(null);
+                                    },
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty
+                                          .resolveWith<Color>(
+                                        (states) {
+                                          // if (states.contains(
+                                          //     MaterialState.disabled)) {
+                                          //   return Colors
+                                          //       .grey; // Change disabled button background color
+                                          // }
+                                          return const Color(
+                                              0xff00577B); // Change enabled button background color
+                                        },
+                                      ),
+                                    ),
+                                    // backgroundColor:
+                                    //     MaterialStatePropertyAll()),
+                                    child: const Text(
+                                      "حفظ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                    ],
+                  ),
+                ),
+              );
+      }),
+    );
+  }
+}
+
+class AdminProjectAcceptPage extends StatelessWidget {
+  const AdminProjectAcceptPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const AdminBasePage(
+      child: AdminSuggestionList(),
     );
   }
 }

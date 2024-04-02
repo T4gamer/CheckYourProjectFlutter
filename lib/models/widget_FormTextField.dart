@@ -4,6 +4,7 @@ class FormTextField extends StatelessWidget {
   final String hint;
   final IconData icon;
   final bool isPassword;
+  final bool? readonly;
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
   final TextEditingController? controller;
@@ -15,7 +16,8 @@ class FormTextField extends StatelessWidget {
       this.validator,
       this.onChanged,
       this.controller,
-      required this.isPassword});
+      required this.isPassword,
+      this.readonly});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,7 @@ class FormTextField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
       child: TextFormField(
         obscureText: isPassword,
+        readOnly: readonly == null ? false : readonly!,
         decoration: InputDecoration(
             prefixIcon: Icon(icon),
             hintText: hint,

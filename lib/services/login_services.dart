@@ -5,9 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/refreshed_token.dart';
 
-Future<bool?> login(String username, String password) async {
+Future<bool> login(String username, String password) async {
   final InternetService services = InternetService();
-  if (!services.isAuthorized()) {
+  if (services.isAuthorized()) {
+    return true;
+  } else {
     final tokenBody = await services
         .post(CREATETOKEN, {"username": username, "password": password});
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -17,10 +19,9 @@ Future<bool?> login(String username, String password) async {
       services.setToken(token.access);
       return true;
     } catch (e) {
-      return null;
+      return false;
     }
   }
-  return false;
 }
 
 Future<bool> refreshLoginService() async {

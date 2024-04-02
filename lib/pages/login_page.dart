@@ -12,7 +12,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   bool isLoggedIn = false;
 
   @override
@@ -61,8 +60,8 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Expanded(
               child: SingleChildScrollView(
-                child: Consumer<UserProvider>(
-                    builder: (context, provider, child) {
+                child:
+                    Consumer<UserProvider>(builder: (context, provider, child) {
                   return Form(
                     key: provider.formKey,
                     child: Column(
@@ -119,21 +118,33 @@ class _LoginPageState extends State<LoginPage> {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 32, horizontal: 32),
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                                prefixIcon: Icon(Icons.password),
-                                hintText: "كلمة المرور",
-                                hintStyle:
-                                    TextStyle(fontWeight: FontWeight.bold),
-                                // errorText: "يرجي ادخال كلمة مرور صحيحة",
-                                border: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.black, width: 3))),
-                            validator: provider.passwordValidator,
-                            onChanged: (value) {
-                              provider.passwordController.text = value.trim();
-                            },
-                          ),
+                          child:
+                              Stack(alignment: Alignment.centerLeft, children: [
+                            TextFormField(
+                              obscureText: !provider.isVisible,
+                              decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.password),
+                                  hintText: "كلمة المرور",
+                                  hintStyle:
+                                      TextStyle(fontWeight: FontWeight.bold),
+                                  // errorText: "يرجي ادخال كلمة مرور صحيحة",
+                                  border: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black, width: 3))),
+                              validator: provider.passwordValidator,
+                              onChanged: (value) {
+                                provider.passwordController.text = value.trim();
+                              },
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  provider.isVisible = !provider.isVisible;
+                                  setState(() {});
+                                },
+                                icon: Icon(provider.isVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off)),
+                          ]),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(16.0),
@@ -149,12 +160,15 @@ class _LoginPageState extends State<LoginPage> {
                                           setState(() {});
                                           try {
                                             await provider.loginUser();
-                                            Future.delayed(
-                                                const Duration(seconds: 3));
+                                            // Future.delayed(
+                                            //     const Duration(seconds: 3));
                                             if (provider.loggedIn) {
-                                              Navigator.pushNamed(context, "/home");
+                                              Navigator.pushNamed(
+                                                  context, "/home");
+                                              setState(() {});
                                             }
                                           } catch (error) {
+                                            setState(() {});
                                           }
                                           provider.setLoginLoading(false);
                                           setState(() {});

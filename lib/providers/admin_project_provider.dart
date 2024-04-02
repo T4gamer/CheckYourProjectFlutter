@@ -5,6 +5,7 @@ import 'package:project_manager/services/models_services.dart';
 
 import '../models/project_details_list.dart';
 import '../models/student_details_list.dart';
+import '../models/suggestion_list.dart';
 
 class AdminProjectProvider extends ChangeNotifier {
   bool _done = false;
@@ -219,5 +220,9 @@ class AdminProjectProvider extends ChangeNotifier {
       }
     }
     return false;
+  }
+
+  Future<void> changeSuggestionStatus(Suggestion s, String status) async {
+    await patchSuggestion(id: s.id, title: s.title, image: s.image, status: status);
   }
 }

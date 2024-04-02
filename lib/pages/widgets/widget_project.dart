@@ -42,7 +42,7 @@ class ProjectWidget extends StatelessWidget {
                 height: 97,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(32.0),
-                  child: Image.network(image),
+                  child: Image.asset("assets/pdfImage.png"),
                 )),
             Expanded(
               child: Column(
@@ -76,7 +76,8 @@ class ProjectMoreDetails extends StatefulWidget {
   const ProjectMoreDetails({
     super.key,
     this.onExtend,
-    this.onLoad,required this.project,
+    this.onLoad,
+    required this.project,
   });
 
   @override
@@ -117,23 +118,19 @@ class _ProjectMoreDetailsState extends State<ProjectMoreDetails> {
                     height: 97,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(32.0),
-                      child: Image.network(widget.project.image),
+                      child: Image.asset("assets/pdfImage.png"),
                     )),
                 Expanded(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          widget.project.title,
-                          maxLines: 3,
-                          overflow: TextOverflow
-                              .fade, // Handle overflowed text with an ellipsis
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                      ),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      widget.project.title,
+                      maxLines: 3,
+                      overflow: TextOverflow
+                          .fade, // Handle overflowed text with an ellipsis
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
                   ),
                 ),
                 IconButton(
@@ -169,6 +166,7 @@ class _ProjectMoreDetailsState extends State<ProjectMoreDetails> {
                     ],
                   ),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -197,7 +195,9 @@ class _ProjectMoreDetailsState extends State<ProjectMoreDetails> {
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.w800),
                             ),
-                            const SizedBox(width: 16,),
+                            const SizedBox(
+                              width: 16,
+                            ),
                             widget.project.progression != null
                                 ? Expanded(
                                     child: LinearProgressIndicator(
@@ -211,7 +211,7 @@ class _ProjectMoreDetailsState extends State<ProjectMoreDetails> {
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return SizedBox(
-                                height: 250,
+                                height: 150,
                                 child: ListView(
                                   children: List.generate(snapshot.data!.length,
                                       (index) {
@@ -230,17 +230,21 @@ class _ProjectMoreDetailsState extends State<ProjectMoreDetails> {
                               child: CircularProgressIndicator(),
                             );
                           }),
-                      SizedBox(width: 200,
-                        child: ElevatedButton(onPressed: (){
-                          Provider.of<ChatProvider>(context,listen:false).setProject(item:widget.project);
-                          Navigator.pushNamed(context, "/chat");
-                        }, child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text("الدخول للمحادثة"),
-                            Icon(Icons.message)
-                          ],
-                        )),
+                      SizedBox(
+                        width: 200,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              Provider.of<ChatProvider>(context, listen: false)
+                                  .setProject(item: widget.project);
+                              Navigator.pushNamed(context, "/chat");
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text("الدخول للمحادثة"),
+                                Icon(Icons.message)
+                              ],
+                            )),
                       )
                     ],
                   ),

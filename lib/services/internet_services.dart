@@ -60,6 +60,19 @@ class InternetService {
     );
   }
 
+  Future<http.Response> put(String endpoint, Map<String, dynamic> data) {
+    final url = Uri.parse(_urlString + endpoint);
+    return http.put(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer $_token',
+      },
+      body: jsonEncode(data),
+      encoding: Encoding.getByName("utf-8"),
+    );
+  }
+
   Future<http.Response> delete(String endpoint) {
     final url = Uri.parse(_urlString + endpoint);
     return http.delete(

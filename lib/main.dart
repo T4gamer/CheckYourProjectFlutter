@@ -12,6 +12,7 @@ import 'package:project_manager/providers/admin_project_provider.dart';
 import 'package:project_manager/providers/admin_student_provider.dart';
 import 'package:project_manager/providers/admin_teacher_provider.dart';
 import 'package:project_manager/providers/chat_provider.dart';
+import 'package:project_manager/providers/edit_project_provider.dart';
 import 'package:project_manager/providers/edit_student_provider.dart';
 import 'package:project_manager/providers/edit_teacher_provider.dart';
 import 'package:project_manager/providers/register_provider.dart';
@@ -19,8 +20,15 @@ import 'package:project_manager/providers/teacher_provider.dart';
 import 'package:project_manager/providers/user_provider.dart';
 import 'package:project_manager/providers/student_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => StudentProvider()),
     ChangeNotifierProvider(create: (context) => UserProvider()),
@@ -31,6 +39,7 @@ void main() {
     ChangeNotifierProvider(create: (context) => AdminTeacherProvider()),
     ChangeNotifierProvider(create: (context) => AdminEditTeacherProvider()),
     ChangeNotifierProvider(create: (context) => AdminProjectProvider()),
+    ChangeNotifierProvider(create: (context) => AdminEditProjectProvider()),
     ChangeNotifierProvider(create: (context) => ChatProvider()),
   ], child: const MyApp()));
 }
@@ -60,10 +69,12 @@ class MyApp extends StatelessWidget {
         '/adminTeacherDelete': (context) => const AdminTeacherDeletePage(),
         '/adminProjectList': (context) => const AdminProjectListPage(),
         '/adminProjectDelete': (context) => const AdminProjectDeletePage(),
+        '/adminProjectAccept': (context) => const AdminProjectAcceptPage(),
         '/adminProjectAddStudent': (context) =>
             const AdminProjectAddStudentPage(),
         '/adminProjectSetTeacher': (context) =>
             const AdminProjectSetTeacherPage(),
+        '/adminProjectEdit': (context) => const AdminProjectEditPage(),
       },
       theme: ThemeData(
         fontFamily: "Tajawal",

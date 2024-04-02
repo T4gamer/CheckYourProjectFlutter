@@ -57,33 +57,39 @@ class TeacherArchive extends StatelessWidget {
                                       (index) {
                                     final item =
                                         provider.teacherProjectList[index];
-                                    return Stack(
-                                      alignment: Alignment.centerLeft,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            provider.setCurrentProject(item);
-                                            provider.onItemTapped(1);
-                                          },
-                                          child: ProjectWidget(
-                                            title: item.title,
-                                            image: item.image,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: IconButton(
-                                              onPressed: () {
-                                                Provider.of<ChatProvider>(context,
-                                                        listen: false)
-                                                    .setProject(project: item);
-                                                Navigator.pushNamed(
-                                                    context, "/chat");
-                                              },
-                                              icon: const Icon(Icons.chat)),
-                                        )
-                                      ],
+                                    return ProjectMoreDetails(
+                                      project: item,
+                                      onLoad: provider
+                                          .loadFilteredStudentForProject(
+                                              item.id),
                                     );
+                                    // return Stack(
+                                    //   alignment: Alignment.centerLeft,
+                                    //   children: [
+                                    //     InkWell(
+                                    //       onTap: () {
+                                    //         provider.setCurrentProject(item);
+                                    //         provider.onItemTapped(1);
+                                    //       },
+                                    //       child: ProjectWidget(
+                                    //         title: item.title,
+                                    //         image: item.image,
+                                    //       ),
+                                    //     ),
+                                    //     Padding(
+                                    //       padding: const EdgeInsets.all(16.0),
+                                    //       child: IconButton(
+                                    //           onPressed: () {
+                                    //             Provider.of<ChatProvider>(context,
+                                    //                     listen: false)
+                                    //                 .setProject(project: item);
+                                    //             Navigator.pushNamed(
+                                    //                 context, "/chat");
+                                    //           },
+                                    //           icon: const Icon(Icons.chat)),
+                                    //     )
+                                    //   ],
+                                    // );
                                   }),
                                 )
                               : const Center(

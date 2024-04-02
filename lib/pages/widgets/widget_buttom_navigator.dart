@@ -38,6 +38,35 @@ class BottomNavigator extends StatelessWidget {
   }
 }
 
+class StudentBottomNavigator extends StatelessWidget {
+  const StudentBottomNavigator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<StudentProvider>(builder: (context, provider, _) {
+      return BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today_rounded),
+            label: 'المواعيد',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.short_text_outlined),
+            label: 'تفاصيل',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book_outlined),
+            label: 'الإرشيف',
+          ),
+        ],
+        currentIndex: provider.selectedIndex,
+        selectedItemColor: const Color(0xff00577B),
+        unselectedItemColor: Colors.grey,
+        onTap: provider.onItemTapped,
+      );
+    });
+  }
+}
 
 class TeacherBottomNavigator extends StatelessWidget {
   const TeacherBottomNavigator({super.key});
@@ -52,16 +81,16 @@ class TeacherBottomNavigator extends StatelessWidget {
             label: 'المواعيد',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'المقترحات',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.short_text_outlined),
             label: 'تفاصيل',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book_outlined),
             label: 'المشاريع',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.check_box_outlined),
+            label: 'التقييم',
           ),
         ],
         currentIndex: provider.selectedIndex,

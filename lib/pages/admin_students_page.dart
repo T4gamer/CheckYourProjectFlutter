@@ -328,8 +328,17 @@ class AdminStudentDeletePage extends StatelessWidget {
                                     horizontal: 32.0),
                                 child: IconButton(
                                     onPressed: () {
-                                      provider.deleteStudent(
-                                          item.id, index, true);
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return DeleteConfirmationDialog(
+                                            onConfirm: () {
+                                              provider.deleteStudent(
+                                                  item.id, index, false);
+                                            },
+                                          );
+                                        },
+                                      );
                                     },
                                     icon: const Icon(Icons.delete)),
                               )

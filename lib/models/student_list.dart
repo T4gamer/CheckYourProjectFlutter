@@ -33,7 +33,7 @@ class Student {
   });
 
   int phoneNumber;
-  int project;
+  int? project;
   int id;
   int user;
 

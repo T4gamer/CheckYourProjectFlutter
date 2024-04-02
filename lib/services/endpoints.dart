@@ -15,3 +15,4 @@ const String TEACHER = "/teacher/";
 const String USER = "/user/";
 const String REGISTER = "/register/";
 const String MYACCOUNT = "/myaccount/";
+const String ChangePassword = "/changePassword/";

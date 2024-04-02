@@ -14,6 +14,7 @@ class UserProvider extends ChangeNotifier {
   bool invalidEmail = false;
   bool _loginError = false;
   bool _isLoginLoading = false;
+  bool isVisible = false;
   int _group = 0;
   User? _user;
   Project? _studentProject;
@@ -24,6 +25,10 @@ class UserProvider extends ChangeNotifier {
 
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController changePasswordController =
+      TextEditingController();
+  final TextEditingController changeOldPasswordController =
+      TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   bool get loggedIn => _loggedIn;
@@ -47,27 +52,43 @@ class UserProvider extends ChangeNotifier {
   Future<void> loginUser() async {
     if (_formKey.currentState != null) {
       if (_formKey.currentState!.validate()) {
-        final bool? loggedIn = await login(
+        final bool loggedIn = await login(
             emailController.value.text, passwordController.value.text);
-        if (loggedIn != null) {
-          _loggedIn = loggedIn;
-          _switchLogin();
-        } else {
-          _loggedIn = false;
+        _loggedIn = loggedIn;
+        final Logging s = await _switchLogin();
+        if (s == Logging.notUser) {
           _loginError = true;
+        } else if (s == Logging.student) {
+          await userServices.student;
+        } else {
+          _loginError = false;
         }
-        notifyListeners();
       }
     }
+    notifyListeners();
   }
 
   void setUser(User? value) {
     _user = value;
   }
 
+  Future<void> changePassword() async {
+    try {
+      await UserService().changePassword(
+          changeOldPasswordController.text, changePasswordController.text);
+      changeOldPasswordController.text = "";
+      changePasswordController.text = "";
+    } catch (e) {
+      changeOldPasswordController.text = "";
+      changePasswordController.text = "";
+    }
+    notifyListeners();
+  }
+
   Future<Logging> _switchLogin() async {
     if (_user == null) {
-      await _refreshToken();
+      final res = await _refreshToken();
+      return Logging.notUser;
     }
     if (_user != null) {
       switch (_group) {
@@ -91,9 +112,11 @@ class UserProvider extends ChangeNotifier {
     if (approved) {
       await _loadUser();
       if (_user != null) {
-        if (_user!.groups != []) {
-          setGroup(_user!.groups.first);
-          return true;
+        if (_user!.groups.isNotEmpty) {
+          if (_user!.groups != []) {
+            setGroup(_user!.groups.first);
+            return true;
+          }
         }
       }
     }
@@ -139,7 +162,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> _loadStudent() async {
-    if(_studentAccount == null){
+    if (_studentAccount == null) {
       _studentAccount = await userServices.student;
       notifyListeners();
     }

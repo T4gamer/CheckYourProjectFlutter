@@ -28,8 +28,8 @@ class UserService {
   }
 
   Future<Project?> _getProject() async {
-    if (_studentAccount != null) {
-      _studentProject = await getProject(_studentAccount!.project);
+    if (_studentAccount?.project != null) {
+      _studentProject = await getProject(_studentAccount!.project!);
       return _studentProject;
     }
     return null;
@@ -52,5 +52,9 @@ class UserService {
 
   Future<User> updateUserLastName(int id, String lastName) async {
     return await patchUser(id, null, lastName, null, null);
+  }
+
+  Future<String> changePassword(String pastPassword, String newPassword) async {
+    return await patchPassword(pastPassword, newPassword);
   }
 }

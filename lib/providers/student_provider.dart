@@ -15,11 +15,13 @@ class StudentProvider extends ChangeNotifier {
   String _errorMessage = "";
   bool _isError = false;
   bool _newSuggestion = false;
+  bool loadingSaveSuggestion = false;
   Suggestion? _selectedSuggestion;
   String _imageBase64 = "";
   String _suggestionUrl = "https://placehold.co/600x400.png";
   String _suggestionTitle = "";
   String _suggestionContent = "";
+  String? onSaveSuggestionError;
 
   List<ImportantDate> _importantDates = [];
   List<Suggestion> _suggestionList = [];
@@ -46,7 +48,9 @@ class StudentProvider extends ChangeNotifier {
 
   List<Project> get projectList => _projectList;
 
-  Future<Project?> get currentProject async => await _getCurrentProject();
+  Project? _currentProject;
+
+  Project? get currentProject => _currentProject;
 
   List<Requirement> get requirementList => _requirementList;
 
@@ -55,31 +59,46 @@ class StudentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onItemTapped(int index) {
+  Future<void> onItemTapped(int index) async {
     _selectedIndex = index;
     switch (_selectedIndex) {
       case 0:
         _loadImportantDates();
       case 1:
         _loadSuggestions();
-      case 3:
+      case 2:
         _loadProjects();
     }
     notifyListeners();
   }
 
   Future<void> retry() async {
-    _loadImportantDates();
-    _loadSuggestions();
-    _loadProjects();
+    await _loadImportantDates();
+    await _loadSuggestions();
+    await _loadProjects();
     notifyListeners();
   }
 
-  Future<Project?> _getCurrentProject() async {
-    return await _userService.project;
+  Future<Suggestion?> getCurrentProject() async {
+    final project = await _userService.project;
+    _currentProject = project;
+    if (_suggestionList.isNotEmpty) {
+      if (_currentProject != null) {
+        if (_currentProject?.mainSuggestion != null) {
+          final index = _suggestionList.indexWhere(
+              (element) => element.id == _currentProject!.mainSuggestion!);
+          _selectedSuggestion = _suggestionList[index];
+          if (_selectedSuggestion != null) {
+            return _selectedSuggestion;
+          }
+        }
+      }
+    }
+    return null;
   }
 
   Future<List<ImportantDate>> _loadImportantDates() async {
+    _isError = false;
     try {
       final ImportantDateList data = await getImportantDatesList();
       _importantDates = data.importantDate;
@@ -93,6 +112,7 @@ class StudentProvider extends ChangeNotifier {
   }
 
   Future<void> _loadSuggestions() async {
+    _isError = false;
     try {
       final data = await getSuggestionList();
       final requirements = await getRequirementList();
@@ -111,6 +131,7 @@ class StudentProvider extends ChangeNotifier {
   }
 
   Future<void> _loadProjects() async {
+    _isError = false;
     try {
       final data = await getProjectList();
       _projectList = data.project;
@@ -161,25 +182,59 @@ class StudentProvider extends ChangeNotifier {
     _suggestionContent = value;
   }
 
-  Future<void> createSuggestion() async {
-    final project = await _userService.project;
-    if (project != null) {
-      final suggestion = Suggestion(
-          project: project.id,
-          id: 0,
-          content: _suggestionContent,
-          status: "w",
-          title: _suggestionTitle,
-          image: _suggestionUrl);
-      print(suggestion);
-      await postSuggestion(suggestion);
+  Future<void> createProject() async {
+    onSaveSuggestionError = null;
+    final student = await _userService.student;
+    try {
+      if (student != null) {
+        if (_currentProject == null) {
+          Project project = Project(
+              image: "Empty",
+              progression: 0,
+              id: 0,
+              title: _suggestionTitle,
+              mainSuggestion: null,
+              deliveryDate: null,
+              teacher: null);
+          project = await postProject(project);
+          _currentProject = project;
+          await patchStudent(student.id, null, _currentProject!.id);
+        }
+        await createSuggestion(_currentProject!);
+      }
+    } catch (e) {
+      onSaveSuggestionError = e.toString();
     }
+    loadingSaveSuggestion = false;
+    onItemTapped(selectedIndex);
+    notifyListeners();
+  }
+
+  Future<void> createSuggestion(Project project) async {
+    Suggestion suggestion = Suggestion(
+        project: project.id,
+        id: 0,
+        content: _suggestionContent,
+        status: "w",
+        title: _suggestionTitle,
+        image: _suggestionUrl);
+    suggestion = await postSuggestion(suggestion);
+    await patchProject(
+        id: _currentProject!.id,
+        teacher: 0,
+        title: suggestion.title,
+        image: null,
+        progression: null,
+        deliveryDate: "",
+        mainSuggestion: suggestion.id);
+    _selectedSuggestion = suggestion;
   }
 
   void deleteSuggestion() {
     delSuggestion(_selectedSuggestion!.id);
     onItemTapped(1);
     _selectedSuggestion = null;
+    notifyListeners();
   }
 
   void deleteRequirement(int index) {

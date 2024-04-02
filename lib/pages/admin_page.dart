@@ -54,50 +54,42 @@ class AdminPage extends StatelessWidget {
                   onPress: () {
                     Navigator.pushNamed(context, "/adminTeacherEdit");
                   }),
-              AdminElevatedButton(title: "حذف استاذ", onPress: () {
-                Navigator.pushNamed(context, "/adminTeacherDelete");
-              }),
+              AdminElevatedButton(
+                  title: "حذف استاذ",
+                  onPress: () {
+                    Navigator.pushNamed(context, "/adminTeacherDelete");
+                  }),
               const AdminPageHeadTitle(
                   title: "المشاريع", image: "assets/project-image-admin.png"),
               AdminElevatedButton(
-                  title: "إضافة مشروع",
-                  onPress: () async {
-                    await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddProjectDialog(onSave: (title) {
-                            Provider.of<AdminProjectProvider>(context,
-                                    listen: false)
-                                .createProject(title);
-                          });
-                        });
-                    const snackBar = SnackBar(
-                      content: Text('تم اضافة المشروع'),
-                    );
-                    const snackBarFailed = SnackBar(
-                      content: Text('لم تتم إضافة المشروع'),
-                    );
-                    Provider.of<AdminProjectProvider>(context, listen: false)
-                            .done
-                        ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
-                        : ScaffoldMessenger.of(context).showSnackBar(snackBarFailed);
+                  title: "الموافقة علي مقترح", onPress: () async {
+                    Navigator.pushNamed(context, '/adminProjectAccept');
+              }),
+              AdminElevatedButton(
+                  title: "إضافة طالب الي مشروع",
+                  onPress: () {
+                    Navigator.pushNamed(context, "/adminProjectAddStudent");
                   }),
               AdminElevatedButton(
-                  title: "إضافة طالب الي مشروع", onPress: () {
-                Navigator.pushNamed(context, "/adminProjectAddStudent");
-              }),
-              AdminElevatedButton(title: "تحديد مشرف لمشروع", onPress: () {
-                Navigator.pushNamed(context, "/adminProjectSetTeacher");
-              }),
+                  title: "تحديد مشرف لمشروع",
+                  onPress: () {
+                    Navigator.pushNamed(context, "/adminProjectSetTeacher");
+                  }),
               AdminElevatedButton(
                   title: "أرشيف المشاريع",
                   onPress: () {
                     Navigator.pushNamed(context, "/adminProjectList");
                   }),
-              AdminElevatedButton(title: "حذف مشروع", onPress: () {
-                Navigator.pushNamed(context, "/adminProjectDelete");
-              }),
-              AdminElevatedButton(title: "تعديل بيانات مشروع", onPress: () {}),
+              AdminElevatedButton(
+                  title: "حذف مشروع",
+                  onPress: () {
+                    Navigator.pushNamed(context, "/adminProjectDelete");
+                  }),
+              AdminElevatedButton(
+                  title: "تعديل بيانات مشروع",
+                  onPress: () {
+                    Navigator.pushNamed(context, "/adminProjectEdit");
+                  }),
             ],
           ),
         ),

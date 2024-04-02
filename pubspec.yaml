@@ -40,6 +40,10 @@ dependencies:
   shared_preferences: ^2.2.2
   capped_progress_indicator: ^0.0.2
   image_picker: ^1.0.6
+  syncfusion_flutter_pdfviewer: ^22.2.12
+  firebase_core: ^2.27.2
+  firebase_storage: ^11.7.0
+  uuid: ^3.0.7
 
 
 dev_dependencies:
@@ -51,7 +55,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -76,6 +80,8 @@ flutter:
     - assets/students-image-admin.png
     - assets/project-image-admin.png
     - assets/teachers-image-admin.png
+    - assets/incomplete.png
+    - assets/pdfImage.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

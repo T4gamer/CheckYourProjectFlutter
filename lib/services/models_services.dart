@@ -43,6 +43,15 @@ Future<SuggestionList> getSuggestionList() async {
   return suggestionListFromJson(body);
 }
 
+Future<Suggestion> getSuggestion(int id) async {
+  Response response = await services.get(SUGGESTION, {"id": "$id"});
+  final body = responseDecoder(response);
+  if (response.statusCode != 200) {
+    throw Exception('${response.statusCode}:${response.body}');
+  }
+  return suggestionListFromJson(body).suggestion.first;
+}
+
 Future<ProjectList> getProjectList() async {
   Response response = await services.get(PROJECT, null);
   final body = responseDecoder(response);
@@ -62,7 +71,7 @@ Future<User> getMyAccount() async {
 }
 
 Future<Student> getStudent(int? id) async {
-  Response response = await services.get(STUDENT, {"user":"$id"});
+  Response response = await services.get(STUDENT, {"user": "$id"});
   final body = responseDecoder(response);
   if (response.statusCode != 200) {
     throw Exception('${response.statusCode}:${response.body}');
@@ -144,15 +153,15 @@ Future<Project> patchProject(
   if (progression != null) {
     request["progression"] = progression;
   }
-  // if (title != null || title != "") {
-  //   request["title"] = title;
-  // }
+  if (title != null || title != "") {
+    request["title"] = title;
+  }
   if (mainSuggestion != 0) {
     request["main_suggestion"] = mainSuggestion;
   }
-  // if (image != null || image != "") {
-  //   request["image"] = image;
-  // }
+  if (image != null || image != "") {
+    request["image"] = image;
+  }
   if (deliveryDate != "") {
     request["delivery_date"] = deliveryDate;
   }
@@ -210,6 +219,30 @@ Future<Suggestion> postSuggestion(Suggestion suggestionItem) async {
   Response response = await services.post(SUGGESTION, suggestionItem.toJson());
   final body = responseDecoder(response);
   if (response.statusCode != 201) {
+    throw Exception('${response.statusCode}:${response.body}');
+  }
+  return Suggestion.fromJson(jsonDecode(body));
+}
+
+Future<Suggestion> patchSuggestion({
+  required int id,
+  required String? title,
+  required String? image,
+  required String? status,
+}) async {
+  Map<String, dynamic> request = <String, dynamic>{};
+  if (title != null || title != "") {
+    request["title"] = title;
+  }
+  if (image != null || image != "") {
+    request["image"] = image;
+  }
+  if (status == "w" || status == "a" || status == "r") {
+    request["status"] = status;
+  }
+  Response response = await services.patch("$SUGGESTION$id/", request);
+  final body = responseDecoder(response);
+  if (response.statusCode != 200) {
     throw Exception('${response.statusCode}:${response.body}');
   }
   return Suggestion.fromJson(jsonDecode(body));
@@ -275,6 +308,18 @@ Future<User> patchUser(int id, String? firstName, String? lastName,
     throw Exception('${response.statusCode}:${response.body}');
   }
   return User.fromJson(jsonDecode(body));
+}
+
+Future<String> patchPassword(String oldPass, String newPass) async {
+  Map<String, dynamic> request = <String, dynamic>{};
+  request["old_password"] = oldPass;
+  request["new_password"] = newPass;
+  Response response = await services.patch("$ChangePassword", request);
+  final body = responseDecoder(response);
+  if (response.statusCode != 200) {
+    throw Exception('${response.statusCode}:${response.body}');
+  }
+  return body;
 }
 
 Future<Teacher> getTeacher(int id) async {

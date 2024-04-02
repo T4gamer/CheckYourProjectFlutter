@@ -80,10 +80,10 @@ class TeacherPage extends StatelessWidget {
                       return provider.selectedIndex == 0
                           ? const TeacherImportantDatesListWidget()
                           : provider.selectedIndex == 1
-                              ? const TeacherSuggestionList()
+                              ? const TeacherDetails()
                               : provider.selectedIndex == 2
-                                  ? const TeacherDetails()
-                                  : const TeacherArchive();
+                                  ? const TeacherArchive()
+                                  : const TeacherGradingView();
                     }
                   }
                   return const Expanded(

@@ -73,158 +73,163 @@ class TeacherDetails extends StatelessWidget {
       return Expanded(
         child: provider.currentProject != null
             ? provider.selectedSuggestion != null
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: Stack(
-                            alignment: Alignment.bottomLeft,
-                            children: [
-                              Container(
-                                  constraints:
-                                      const BoxConstraints(maxHeight: 165),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(16.0),
-                                    child: Image.network(
-                                        provider.selectedSuggestion != null
-                                            ? provider.selectedSuggestion!.image
-                                            : ""),
-                                  )),
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.edit),
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all(Colors.white),
-                                    shadowColor: MaterialStateProperty.all(
-                                        Colors.grey.withOpacity(0.8)),
-                                    elevation: MaterialStateProperty.all(2)),
-                              )
-                            ],
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                              child: Text(
-                                provider.selectedSuggestion!.title,
-                                style: const TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            IconButton(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all(Colors.white),
-                                    shadowColor: MaterialStateProperty.all(
-                                        Colors.grey.withOpacity(0.8)),
-                                    elevation: MaterialStateProperty.all(2)),
-                                onPressed: () {
-                                  provider.deleteSuggestion();
-                                },
-                                icon: const Icon(
-                                  Icons.delete,
-                                )),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                          child: Container(
-                            constraints: const BoxConstraints(
-                                maxHeight: 100, minHeight: 50),
-                            child: SingleChildScrollView(
-                              child: Text(
-                                provider.selectedSuggestion!.content,
-                                maxLines: null,
-                                style: const TextStyle(fontSize: 18),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const Center(
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-                            child: Text(
-                              "متطلبات المشروع",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                        Flexible(
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              ListView(
-                                children: List.generate(
-                                    provider.requirementList.length, (index) {
-                                  final item = provider.requirementList[index];
-                                  return RequirementWidget(
-                                    title: item.name,
-                                    onDelete: () {
-                                      provider.deleteRequirement(index);
-                                    },
-                                    onEdit: () {
-                                      showEditRequirementDialog(context,
-                                          (id, requirement) {
-                                        provider.editRequirement(
-                                            id, requirement);
-                                      }, item.id);
-                                    },
-                                    status: item.status,
-                                  );
-                                }),
-                              ),
-                              Align(
-                                alignment: Alignment.bottomCenter,
-                                child: IconButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.white),
-                                        shadowColor: MaterialStateProperty.all(
-                                            Colors.grey.withOpacity(0.8)),
-                                        elevation:
-                                            MaterialStateProperty.all(2)),
-                                    onPressed: () {
-                                      showAddRequirementDialog(
-                                          context, provider.createRequirement);
-                                    },
-                                    icon: const Icon(
-                                      Icons.add_circle_outline,
-                                      size: 40,
-                                      color: Color(0xff196D8F),
-                                    )),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                : const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Center(
-                      child: Text("لم يتم إختيار مقترح"),
-                    ),
-                  )
-            : const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Center(
-                  child: Text("لم يتم إختيار مشروع"),
+            ? Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Stack(
+                  alignment: Alignment.bottomLeft,
+                  children: [
+                    Container(
+                        constraints:
+                        const BoxConstraints(maxHeight: 165),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16.0),
+                            child: Image.asset(
+                                provider.selectedSuggestion != null
+                                    ? "assets/pdfImage.png"
+                                    : "assets/incomplete.png")
+                          // Image.network(
+                          //     provider.selectedSuggestion != null
+                          //         ? provider.selectedSuggestion!.image
+                          //         : ""),
+                        )),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.edit),
+                      style: ButtonStyle(
+                          backgroundColor:
+                          MaterialStateProperty.all(Colors.white),
+                          shadowColor: MaterialStateProperty.all(
+                              Colors.grey.withOpacity(0.8)),
+                          elevation: MaterialStateProperty.all(2)),
+                    )
+                  ],
                 ),
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: Text(
+                      provider.selectedSuggestion!.title,
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  // IconButton(
+                  //     style: ButtonStyle(
+                  //         backgroundColor:
+                  //             MaterialStateProperty.all(Colors.white),
+                  //         shadowColor: MaterialStateProperty.all(
+                  //             Colors.grey.withOpacity(0.8)),
+                  //         elevation: MaterialStateProperty.all(2)),
+                  //     onPressed: () {
+                  //       provider.deleteSuggestion();
+                  //     },
+                  //     icon: const Icon(
+                  //       Icons.delete,
+                  //     )),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                child: Container(
+                  constraints: const BoxConstraints(
+                      maxHeight: 100, minHeight: 50),
+                  child: SingleChildScrollView(
+                    child: Text(
+                      provider.selectedSuggestion!.content,
+                      maxLines: null,
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+              ),
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: Text(
+                    "متطلبات المشروع",
+                    style: TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    provider.requirementList.isNotEmpty ? ListView(
+                      children: List.generate(
+                          provider.requirementList.length, (index) {
+                        final item = provider.requirementList[index];
+                        return RequirementWidget(
+                          title: item.name,
+                          onDelete: () {
+                            provider.deleteRequirement(index);
+                          },
+                          onEdit: () {
+                            showEditRequirementDialog(context,
+                                    (id, requirement) {
+                                  provider.editRequirement(
+                                      id, requirement);
+                                }, item.id);
+                          },
+                          status: item.status,
+                        );
+                      }),
+                    ):const Center(child: Text("لا توجد متطلبات لهذا المقترح")),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: IconButton(
+                          style: ButtonStyle(
+                              backgroundColor:
+                              MaterialStateProperty.all(
+                                  Colors.white),
+                              shadowColor: MaterialStateProperty.all(
+                                  Colors.grey.withOpacity(0.8)),
+                              elevation:
+                              MaterialStateProperty.all(2)),
+                          onPressed: () {
+                            showAddRequirementDialog(
+                                context, provider.createRequirement);
+                          },
+                          icon: const Icon(
+                            Icons.add_circle_outline,
+                            size: 40,
+                            color: Color(0xff196D8F),
+                          )),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        )
+            : const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Center(
+            child: Text(
+                "لم يضف الطالب مقترح بعد أو لم تتم الموافقة علي مقترحه"),
+          ),
+        )
+            : const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Center(
+            child: Text("لم يتم إختيار مشروع"),
+          ),
+        ),
       );
     });
   }
 
-  void showAddRequirementDialog(
-      BuildContext context, void Function(String) add) async {
+  void showAddRequirementDialog(BuildContext context,
+      void Function(String) add) async {
     String? enteredText = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {

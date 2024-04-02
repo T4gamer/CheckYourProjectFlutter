@@ -95,12 +95,23 @@ class SettingsPage extends StatelessWidget {
                       ),
                       customDivider(),
                       customText("تغيير كلمة  المرور"),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(64, 8, 8, 8),
+                        child: TextFormField(
+                          controller: provider.changeOldPasswordController,
+                          decoration: InputDecoration(
+                              hintText: "كلمة المرور القديمة",
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(32))),
+                        ),
+                      ),
                       Stack(
                         alignment: Alignment.center,
                         children: [
                           Padding(
                             padding: const EdgeInsets.fromLTRB(64, 8, 8, 8),
                             child: TextFormField(
+                              controller: provider.changePasswordController,
                               decoration: InputDecoration(
                                   hintText: "********",
                                   border: OutlineInputBorder(
@@ -109,7 +120,9 @@ class SettingsPage extends StatelessWidget {
                           ),
                           Align(
                             alignment: Alignment.centerLeft,
-                            child: saveIconButton(() {}),
+                            child: saveIconButton(() {
+
+                            }),
                           ),
                         ],
                       ),
@@ -124,7 +137,8 @@ class SettingsPage extends StatelessWidget {
                                 logout();
                                 // Navigator.pushReplacementNamed(
                                 //     context, "/");
-                                Navigator.popUntil(context, (route) => route.isFirst);
+                                Navigator.popUntil(
+                                    context, (route) => route.isFirst);
                               },
                               child: const Text("تسجيل الخروج")),
                         ],

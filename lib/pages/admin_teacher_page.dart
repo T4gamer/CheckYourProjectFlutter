@@ -328,17 +328,20 @@ class AdminTeacherEditPage extends StatelessWidget {
               child: Text("تعديل بيانات الاستاذ",
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: [
-                  Text(
-                    "بحث",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            provider.teacher == null
+                ? const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      children: [
+                        Text(
+                          "بحث",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        )
+                      ],
+                    ),
                   )
-                ],
-              ),
-            ),
+                : Container(),
             provider.teacher == null
                 ? AdminSearchbar(
                     onChanged: (String val) {
@@ -636,7 +639,8 @@ class AdminTeacherDeletePage extends StatelessWidget {
                                       builder: (BuildContext context) {
                                         return DeleteConfirmationDialog(
                                           onConfirm: () {
-                                            provider.deleteTeacher(item.id, index, false);
+                                            provider.deleteTeacher(
+                                                item.id, index, false);
                                           },
                                         );
                                       },
@@ -665,7 +669,17 @@ class AdminTeacherDeletePage extends StatelessWidget {
                                 const EdgeInsets.symmetric(horizontal: 32.0),
                             child: IconButton(
                                 onPressed: () {
-                                  provider.deleteTeacher(item.id, index, true);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return DeleteConfirmationDialog(
+                                        onConfirm: () {
+                                          provider.deleteTeacher(
+                                              item.id, index, false);
+                                        },
+                                      );
+                                    },
+                                  );
                                 },
                                 icon: const Icon(Icons.delete)),
                           )

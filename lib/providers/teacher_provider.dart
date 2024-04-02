@@ -4,18 +4,22 @@ import 'package:project_manager/services/image_services.dart';
 import 'package:project_manager/services/user_services.dart';
 
 import '../models/important_date_list.dart';
-import '../models/project_list.dart';
+import '../models/project_details_list.dart';
+import '../models/student_details_list.dart';
 import '../models/suggestion_list.dart';
 import '../models/teacher_list.dart';
 import '../models/user_list.dart';
 import '../services/models_services.dart';
+
+import 'package:flutter/material.dart';
 
 class TeacherProvider extends ChangeNotifier {
   static final UserService _userService = UserService();
   static final ImageService _imageService = ImageService();
   int _selectedIndex = 0;
   bool _newSuggestion = false;
-  List<Project> _projectList = [];
+  List<ProjectDetail> _projectList = [];
+  List<StudentDetail> _studentList = [];
   List<Suggestion> _suggestionList = [];
   List<Requirement> _requirementList = [];
   String _imageBase64 = "";
@@ -23,7 +27,7 @@ class TeacherProvider extends ChangeNotifier {
   String _suggestionContent = "";
   String _suggestionTitle = "";
 
-  Project? _currentProject;
+  ProjectDetail? _currentProject;
 
   Suggestion? _selectedSuggestion;
 
@@ -37,15 +41,15 @@ class TeacherProvider extends ChangeNotifier {
 
   Suggestion? get selectedSuggestion => _selectedSuggestion;
 
-  Project? get currentProject => _currentProject;
+  ProjectDetail? get currentProject => _currentProject;
 
   Teacher? get teacher => _teacher;
 
   Future<User?> get user async => await _userService.user;
 
-  List<Project> get teacherProjectList => setTeacherProjects();
+  List<ProjectDetail> get teacherProjectList => setTeacherProjects();
 
-  List<Project> get projectList => _projectList;
+  List<ProjectDetail> get projectList => _projectList;
 
   Future<List<ImportantDate>> get importantDates => _loadImportantDates();
 
@@ -53,6 +57,24 @@ class TeacherProvider extends ChangeNotifier {
 
   List<Requirement> get requirementList => _requirementList;
 
+  int criterion1 = 1;
+  int criterion2 = 1;
+  int criterion3 = 1;
+
+  void updateCriterion1(int value) {
+    criterion1 = value;
+    notifyListeners();
+  }
+
+  void updateCriterion2(int value) {
+    criterion2 = value;
+    notifyListeners();
+  }
+
+  void updateCriterion3(int value) {
+    criterion3 = value;
+    notifyListeners();
+  }
 
   void onItemTapped(int index) {
     _selectedIndex = index;
@@ -79,8 +101,8 @@ class TeacherProvider extends ChangeNotifier {
 
   Future<bool> loadProjects() async {
     try {
-      final data = await getProjectList();
-      _projectList = data.project;
+      final data = await getProjectDetailsList();
+      _projectList = data.datum;
       notifyListeners();
       return true;
     } catch (e) {
@@ -88,14 +110,23 @@ class TeacherProvider extends ChangeNotifier {
     }
   }
 
-  List<Project> setTeacherProjects() {
+  List<ProjectDetail> setTeacherProjects() {
     if (_projectList.isNotEmpty && teacher != null) {
       return _projectList
-          .where((element) => element.teacher == _teacher!.id)
+          .where((element) => element.teacher?.id == _teacher!.id)
           .toList();
     } else {
       return [];
     }
+  }
+
+  Future<List<StudentDetail>> loadFilteredStudentForProject(
+      int projectId) async {
+    if (_studentList.isEmpty) {
+      final data = await getStudentDetailsList();
+      _studentList = data.studentDetails;
+    }
+    return _studentList.where((e) => e.project == projectId).toList();
   }
 
   Future<List<ImportantDate>> _loadImportantDates() async {
@@ -107,8 +138,12 @@ class TeacherProvider extends ChangeNotifier {
     return [];
   }
 
-  void setCurrentProject(Project item) {
+  Future<void> setCurrentProject(ProjectDetail item) async {
+    _selectedSuggestion = null;
     _currentProject = item;
+    if (_currentProject != null) {
+      _selectedSuggestion = _currentProject!.mainSuggestion;
+    }
     notifyListeners();
   }
 
@@ -125,18 +160,24 @@ class TeacherProvider extends ChangeNotifier {
       _suggestionList = data.suggestion;
       notifyListeners();
       return _suggestionList;
-    } catch (e) {
-    }
+    } catch (e) {}
     notifyListeners();
     return [];
   }
 
-  void setSelectedSuggestion(int index) {
-    _selectedSuggestion = _suggestionList[index];
-    _requirementList = [];
-    _loadSuggestions();
-    notifyListeners();
-  }
+  // Future<Suggestion?> setSelectedSuggestion() async {
+  //   if (_currentProject != null && _currentProject?.mainSuggestion != null) {
+  //     _selectedSuggestion =
+  //         await getSuggestion(_currentProject!.mainSuggestion!);
+  //     if (_selectedSuggestion == null) {
+  //       _requirementList = [];
+  //       _loadSuggestions();
+  //       return null;
+  //     }
+  //     return _selectedSuggestion;
+  //   }
+  //   notifyListeners();
+  // }
 
   void createRequirement(String content) async {
     if (_selectedSuggestion != null) {
