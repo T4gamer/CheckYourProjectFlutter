@@ -640,7 +640,7 @@ class AdminTeacherDeletePage extends StatelessWidget {
                                         return DeleteConfirmationDialog(
                                           onConfirm: () {
                                             provider.deleteTeacher(
-                                                item.id, index, false);
+                                                item.user.id, index, false);
                                           },
                                         );
                                       },
@@ -675,7 +675,7 @@ class AdminTeacherDeletePage extends StatelessWidget {
                                       return DeleteConfirmationDialog(
                                         onConfirm: () {
                                           provider.deleteTeacher(
-                                              item.id, index, false);
+                                              item.user.id, index, false);
                                         },
                                       );
                                     },

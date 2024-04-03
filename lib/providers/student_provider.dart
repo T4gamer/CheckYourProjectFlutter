@@ -199,7 +199,7 @@ class StudentProvider extends ChangeNotifier {
               teacher: null);
           project = await postProject(project);
           _currentProject = project;
-          await patchStudent(student.id, null, _currentProject!.id);
+          await patchStudent(student.id, null, _currentProject!.id, null);
         }
         await createSuggestion(_currentProject!);
       }

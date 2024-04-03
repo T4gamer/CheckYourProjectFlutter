@@ -154,8 +154,8 @@ class AdminProjectProvider extends ChangeNotifier {
     if (studentToAdd != null && currentProject != null) {
       if (studentToAdd?.project == null) {
         try {
-          final data =
-              await patchStudent(studentToAdd!.id, null, currentProject!.id);
+          final data = await patchStudent(
+              studentToAdd!.id, null, currentProject!.id, null);
           if (data.project == currentProject!.id) {
             return true;
           }
@@ -223,6 +223,7 @@ class AdminProjectProvider extends ChangeNotifier {
   }
 
   Future<void> changeSuggestionStatus(Suggestion s, String status) async {
-    await patchSuggestion(id: s.id, title: s.title, image: s.image, status: status);
+    await patchSuggestion(
+        id: s.id, title: s.title, image: s.image, status: status);
   }
 }

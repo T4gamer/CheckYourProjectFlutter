@@ -15,6 +15,7 @@ class RegisterProvider extends ChangeNotifier {
   TextEditingController lastName = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
+  TextEditingController serialNumber = TextEditingController();
 
   bool _canRegister = false;
   bool _isLoading = false;
@@ -25,13 +26,14 @@ class RegisterProvider extends ChangeNotifier {
 
   String get error => _error;
   String _success = "";
+
   String get success => _success;
 
   Future<void> register(bool isTeacher) async {
     _isLoading = true;
     notifyListeners();
     int group = 2;
-    if(isTeacher){
+    if (isTeacher) {
       group = 3;
     }
     final Map<String, dynamic> user = {
@@ -44,26 +46,38 @@ class RegisterProvider extends ChangeNotifier {
       "groups": [group]
     };
     try {
-      await registerUser(user);
+      if (isTeacher) {
+        await registerUser(user);
+      } else {
+        final res = await registerUser(user);
+        if (res != null) {
+          final std = await getStudent(res.id);
+          if (std != null) {
+            await patchStudent(
+                std.id, null, null, int.parse(serialNumber.text.trim()));
+          }
+        }
+      }
       email.text = '';
       password.text = "";
       confirmPassword.text = "";
       userName.text = "";
       lastName.text = "";
       firstName.text = "";
+      serialNumber.text = "";
       _isLoading = false;
       _success = "تم التسجيل بنجاح";
       _error = "";
-      _canRegister =false;
+      _canRegister = false;
       notifyListeners();
     } catch (e) {
       _error = e.toString();
-      if(_error.length > 150){
-        _error = _error.substring(0,140);
+      if (_error.length > 150) {
+        _error = _error.substring(0, 140);
       }
       _isLoading = false;
       _success = "";
-      _canRegister =false;
+      _canRegister = false;
       notifyListeners();
     }
   }
@@ -72,11 +86,11 @@ class RegisterProvider extends ChangeNotifier {
     if (_formKey.currentState != null) {
       if (_formKey.currentState!.validate()) {
         _canRegister = true;
-      }else{
-        _canRegister =false;
+      } else {
+        _canRegister = false;
       }
-    }else{
-      _canRegister =false;
+    } else {
+      _canRegister = false;
     }
     _success = "";
     _error = "";
@@ -89,6 +103,16 @@ class RegisterProvider extends ChangeNotifier {
     }
     if (!RegExp(r'^[\w.@+-]+$').hasMatch(value)) {
       return 'اسم المستخدم غير صالح';
+    }
+    return null;
+  }
+
+  String? validateSerial(String? value) {
+    if (value == null || value.isEmpty) {
+      return null;
+    }
+    if (!RegExp(r'^\d+$').hasMatch(value)) {
+      return "رقم القيد يتكون من ارقام فقط";
     }
     return null;
   }

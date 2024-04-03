@@ -28,6 +28,7 @@ class AdminEditStudentProvider extends ChangeNotifier {
   TextEditingController lastName = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
+  TextEditingController serialNumber = TextEditingController();
 
   bool _canEdit = false;
   bool _isLoading = false;
@@ -40,28 +41,34 @@ class AdminEditStudentProvider extends ChangeNotifier {
 
   Future<void> updateStudent() async {
     _isLoading = true;
-    final user = _student!.user;
-    try {
-      await patchUser(
-          user.id, firstName.text, lastName.text, userName.text, email.text);
-      email.text = '';
-      password.text = "";
-      confirmPassword.text = "";
-      userName.text = "";
-      lastName.text = "";
-      firstName.text = "";
-      _isLoading = false;
-      _canEdit = false;
-      _error = "";
-      notifyListeners();
-    } catch (e) {
-      _error = e.toString();
-      if (_error.length > 150) {
-        _error = _error.substring(0, 150);
+    if (_student != null) {
+      final user = _student!.user;
+      try {
+        await patchStudent(
+            _student!.id, null, null, int.parse(serialNumber.text.trim()));
+        await patchUser(
+            user.id, firstName.text, lastName.text, userName.text, email.text);
+        email.text = '';
+        password.text = "";
+        confirmPassword.text = "";
+        userName.text = "";
+        lastName.text = "";
+        firstName.text = "";
+        serialNumber.text = "";
+        _isLoading = false;
+        _canEdit = false;
+        _error = "";
+        notifyListeners();
+      } catch (e) {
+        _error = e.toString();
+        if (_error.length > 150) {
+          _error = _error.substring(0, 150);
+        }
+        _isLoading = false;
+        notifyListeners();
       }
-      _isLoading = false;
-      notifyListeners();
     }
+    notifyListeners();
   }
 
   Future<List<StudentDetail>> loadStudents() async {
@@ -145,6 +152,16 @@ class AdminEditStudentProvider extends ChangeNotifier {
     }
     if (value.length < 8) {
       return 'كلمة المرور قصيرة يجب ان تكون 8 احرف علي الاقل';
+    }
+    return null;
+  }
+
+  String? validateSerial(String? value) {
+    if (value == null || value.isEmpty) {
+      return null;
+    }
+    if (!RegExp(r'^\d+$').hasMatch(value)) {
+      return "رقم القيد يتكون من ارقام فقط";
     }
     return null;
   }

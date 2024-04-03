@@ -30,10 +30,10 @@ class Student {
     required this.project,
     required this.id,
     required this.user,
-    this.serialNumber,
+    required this.serialNumber,
   });
 
-  int phoneNumber;
+  int? phoneNumber;
   int? project;
   int? serialNumber;
   int id;

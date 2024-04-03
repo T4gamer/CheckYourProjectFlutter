@@ -24,7 +24,7 @@ class ChatProvider extends ChangeNotifier {
     user = (await _userService.user)!;
     if (user.groups == [2]) {
       final student = await getStudent(user.id);
-      final channelList = await getChannelList(student.project);
+      final channelList = await getChannelList(student!.project);
       _channel = channelList.channel.first;
       final data = await getMessageList(_channel!.id);
       _messagesList = data.detailedMessage;

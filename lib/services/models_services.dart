@@ -70,7 +70,7 @@ Future<User> getMyAccount() async {
   return User.fromJson(jsonDecode(body).first);
 }
 
-Future<Student> getStudent(int? id) async {
+Future<Student?> getStudent(int? id) async {
   Response response = await services.get(STUDENT, {"user": "$id"});
   final body = responseDecoder(response);
   if (response.statusCode != 200) {
@@ -98,7 +98,7 @@ Future<TeacherDetailsList> getTeacherDetailsList() async {
 }
 
 Future<void> delStudent(int id) async {
-  Response response = await services.delete("$STUDENT$id/");
+  Response response = await services.delete("$USER$id/");
   if (response.statusCode != 204) {
     throw Exception('${response.statusCode}:${response.body}');
   }
@@ -180,13 +180,17 @@ Future<void> delProject(int id) async {
   }
 }
 
-Future<Student> patchStudent(int id, int? phoneNumber, int? project) async {
+Future<Student> patchStudent(
+    int id, int? phoneNumber, int? project, int? serialNumber) async {
   Map<String, dynamic> request = <String, dynamic>{};
   if (phoneNumber != null) {
     request["phoneNumber"] = phoneNumber;
   }
   if (project != null) {
     request["project"] = project;
+  }
+  if (serialNumber != null) {
+    request["serialNumber"] = serialNumber;
   }
   Response response = await services.patch("$STUDENT$id/", request);
   final body = responseDecoder(response);
@@ -282,12 +286,13 @@ Future<Requirement> patchRequirement(
   return Requirement.fromJson(jsonDecode(body));
 }
 
-Future<void> registerUser(Map<String, dynamic> user) async {
+Future<User?> registerUser(Map<String, dynamic> user) async {
   Response response = await services.post(REGISTER, user);
-  responseDecoder(response);
+  final body = responseDecoder(response);
   if (response.statusCode != 201) {
     throw Exception(response.body);
   }
+  return User.fromJson(json.decode(body));
 }
 
 Future<User> patchUser(int id, String? firstName, String? lastName,

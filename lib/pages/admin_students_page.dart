@@ -148,6 +148,17 @@ class AdminStudentAddPage extends StatelessWidget {
                         },
                       ),
                       FormTextField(
+                        hint: "رقم القيد",
+                        icon: Icons.numbers,
+                        isPassword: false,
+                        validator: provider.validateSerial,
+                        onChanged: (value) {
+                          if (provider.validateSerial(value) == null) {
+                            provider.serialNumber.text = value;
+                          }
+                        },
+                      ),
+                      FormTextField(
                         hint: "الإسم الاول",
                         icon: Icons.person,
                         isPassword: false,
@@ -299,7 +310,7 @@ class AdminStudentDeletePage extends StatelessWidget {
                                             return DeleteConfirmationDialog(
                                               onConfirm: () {
                                                 provider.deleteStudent(
-                                                    item.id, index, false);
+                                                    item.user.id, index, false);
                                               },
                                             );
                                           },
@@ -334,7 +345,7 @@ class AdminStudentDeletePage extends StatelessWidget {
                                           return DeleteConfirmationDialog(
                                             onConfirm: () {
                                               provider.deleteStudent(
-                                                  item.id, index, false);
+                                                  item.user.id, index, false);
                                             },
                                           );
                                         },
@@ -604,17 +615,17 @@ class AdminStudentEditPage extends StatelessWidget {
                                 }
                               },
                             ),
-                            // FormTextField(
-                            //   hint: "كلمة المرور",
-                            //   icon: Icons.password,
-                            //   isPassword: true,
-                            //   validator: provider.validatePassword,
-                            //   onChanged: (value) {
-                            //     if (provider.validatePassword(value) == null) {
-                            //       provider.password.text = value;
-                            //     }
-                            //   },
-                            // ),
+                            FormTextField(
+                              hint: "رقم القيد",
+                              icon: Icons.numbers,
+                              isPassword: false,
+                              validator: provider.validateSerial,
+                              onChanged: (value) {
+                                if (provider.validateSerial(value) == null) {
+                                  provider.serialNumber.text = value;
+                                }
+                              },
+                            ),
                             // FormTextField(
                             //   hint: "تأكيد كلمة المرور",
                             //   icon: Icons.password,

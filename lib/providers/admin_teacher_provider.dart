@@ -41,13 +41,13 @@ class AdminTeacherProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteStudent(int id,int index,bool isList) async {
-    await delStudent(id);
-    if(isList){
-      _teacherList.removeAt(index);
-    }else{
-      _filteredTeacherList.removeAt(index);
-    }
-    notifyListeners();
-  }
+  // Future<void> deleteStudent(int id,int index,bool isList) async {
+  //   await delStudent(id);
+  //   if(isList){
+  //     _teacherList.removeAt(index);
+  //   }else{
+  //     _filteredTeacherList.removeAt(index);
+  //   }
+  //   notifyListeners();
+  // }
 }
