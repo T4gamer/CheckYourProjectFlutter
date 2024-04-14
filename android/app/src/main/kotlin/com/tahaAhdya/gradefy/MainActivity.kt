@@ -1,4 +1,4 @@
-package com.tahaAhdya.project_manager
+package com.tahaAhdya.gradefy
 
 import io.flutter.embedding.android.FlutterActivity
 

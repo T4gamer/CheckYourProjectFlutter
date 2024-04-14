@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.tahaAhdya" "\0"
-            VALUE "FileDescription", "project_manager" "\0"
+            VALUE "FileDescription", "gradefy" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "project_manager" "\0"
+            VALUE "InternalName", "gradefy" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.tahaAhdya. All rights reserved." "\0"
-            VALUE "OriginalFilename", "project_manager.exe" "\0"
-            VALUE "ProductName", "project_manager" "\0"
+            VALUE "OriginalFilename", "gradefy.exe" "\0"
+            VALUE "ProductName", "gradefy" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

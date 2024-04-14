@@ -22,31 +22,33 @@ class GradingTablePdf extends pw.StatelessWidget {
 
   @override
   pw.Widget build(pw.Context context) {
-    return pw.Center(
-      child: pw.Container(
-        padding: const pw.EdgeInsets.all(20),
-        child: pw.Table(
-          border: pw.TableBorder.all(),
-          children: [
-            pw.TableRow(
+    return pw.Directionality(
+        child: pw.Center(
+          child: pw.Container(
+            padding: const pw.EdgeInsets.all(20),
+            child: pw.Table(
+              border: pw.TableBorder.all(),
               children: [
-                for (var i = 0; i < header.length; i++)
-                  _buildHeaderCell(header[i]),
+                pw.TableRow(
+                  children: [
+                    for (var i = header.length - 1; i >= 0; i--)
+                      _buildHeaderCell(header[i]),
+                  ],
+                ),
+                for (var i = 0; i < dataColumn1.length; i++)
+                  pw.TableRow(
+                    children: [
+                      _buildStaticCell(dataColumn1[i]),
+                      _buildStaticCell(dataColumn2[i]),
+                      _buildStaticCell(editableColumn1[i]),
+                      _buildStaticCell(editableColumn2[i]),
+                    ].reversed.toList(),
+                  ),
               ],
             ),
-            for (var i = 0; i < dataColumn1.length; i++)
-              pw.TableRow(
-                children: [
-                  _buildStaticCell(dataColumn1[i]),
-                  _buildStaticCell(dataColumn2[i]),
-                  _buildStaticCell(editableColumn1[i]),
-                  _buildStaticCell(editableColumn2[i]),
-                ],
-              ),
-          ],
+          ),
         ),
-      ),
-    );
+        textDirection: pw.TextDirection.rtl);
   }
 
   pw.Widget _buildHeaderCell(String text) {

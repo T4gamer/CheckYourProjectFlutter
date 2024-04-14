@@ -209,8 +209,8 @@ class AdminProjectProvider extends ChangeNotifier {
             teacher: teacherToSet!.id,
             mainSuggestion: 0,
             deliveryDate: "",
-            title: null,
-            image: null,
+            title: currentProject!.title,
+            image: currentProject!.image,
             progression: null);
         if (data.teacher == teacherToSet!.id) {
           return true;

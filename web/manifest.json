@@ -1,6 +1,6 @@
 {
-    "name": "project_manager",
-    "short_name": "project_manager",
+    "name": "gradefy",
+    "short_name": "gradefy",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
